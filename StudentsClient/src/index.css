@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: black;
+  overflow-x: hidden;
+  color: white;
+}
+
+a {
+  text-decoration: none;
+}
+a:visited {
+  color: inherit;
+}
+
+button:focus {
+  outline: none;
+}
+
+.gradient {
+  background-image: 
+    radial-gradient(at 27% 37%,hsla(215, 98%, 61%, 1) 0px,transparent 70%),
+    radial-gradient(at 97% 21%, hsla(125, 98%, 72%, 1) 10px, transparent 70%),
+    radial-gradient(at 52% 99%, rgb(58, 214, 253) 50px, transparent 70%),
+    radial-gradient(at 10% 29%, hsla(256, 96%, 67%, 1) 30px, transparent 70%),
+    radial-gradient(at 97% 96%, rgb(87, 234, 62) 10px, transparent 70%),
+    radial-gradient(at 33% 70%, rgb(108, 147, 239) 50px, transparent 70%),
+    radial-gradient(at 79% 53%, rgb(115, 247, 199) 30px, transparent 70%),
+    radial-gradient(at 0% 0%, rgb(115, 247, 199) 30px, transparent 70%);
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  filter: blur(100px) saturate(170%);
+  top: 80px;
+  opacity: 0.15;
+  z-index: -1;
+}
+
+::-webkit-scrollbar{
+  width: 15px;
+  background: black;
+}
+::-webkit-scrollbar-thumb{
+  background-color: #2196F3;
+  border-radius: 10px;
+}
+
+.p-tabmenu-nav {
+  background-color: transparent;
+}
+.p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+  background-color: transparent;
+}
+
+.p-card-content .fieldInput {
+  justify-content: center;
+}
+
+.blur-background {
+  background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+  backdrop-filter: blur(10px); /* Blur the background */
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+  border-radius: 10px; /* Optional: round corners */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: border */
+}
+
+.navbar-wrapper {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.user-icon-container {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.logout-button {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 5px;
+  z-index: 10;
+}
+
+.login-button:focus {
+  outline: none;
+}
+
+.content .p-card-body {
+  padding-top: 0px;
+}
+.content .p-card-content {
+  padding-bottom: 0px;
+}
+
+.p-overlaypanel-close {
+  display: none;
+}
+
+.p-overlaypanel-content {
+  background-color: rgb(220 38 38);
+}
+
+.p-overlaypanel-content .p-button {
+  background-color: transparent;
+  border: 0;
+}
+
+.custom-button {
+  outline: none; /* Remove the outline when the button is not focused */
+}
+
+.custom-button:focus {
+  outline: none; /* Remove the blue ring when the button is focused */
+  box-shadow: none; /* Remove any box-shadow that might appear */
+}
+
+.p-calendar .p-datepicker-trigger {
+  border-radius: 10px;
+  left: -34px;
+  background-color: transparent;
+  color: gray;
+  border: 0;
+  padding: 5px;
+}
+
+.p-fluid .p-inputtext {
+  width: max-content;
+  border-radius: 5px;
+}
+
+.p-calendar .p-inputtext {
+  width: 200px;
+  border-radius: 5px;
+  background-color: transparent;
+  color: white;
+}
