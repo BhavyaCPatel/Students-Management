@@ -1,11 +1,11 @@
-import Router from 'express';
+import express from 'express';
 import auth from '../middlewares/authMiddleware.js';
 import { Faculty, StudentDetails, File } from '../db/index.js';
 import zod from 'zod';
 import bcrypt from 'bcryptjs';
 import { upload, gfs } from '../gridfs.js';
 
-const router = Router();
+const router = express.Router();
 
 const usernameSchema = zod.string().min(3);
 const nameSchema = zod.string();
@@ -28,8 +28,7 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ message: 'Faculty already exists' });
         }
 
-
-        const faculty = await Faculty.create({
+        const faculty = new Faculty({
             username,
             name,
             email,
@@ -37,55 +36,28 @@ router.post('/signup', async (req, res) => {
             password: hashedPassword
         });
 
-        res.json({ message: 'User created successfully', faculty: faculty, });
+        await faculty.save();
 
+        res.status(201).json({ message: 'User created successfully', faculty });
     } catch (err) {
-        console.log(err)
-        res.status(400).json({ error: err.errors, message: 'Internal server error'  });
+        console.log(err);
+        res.status(400).json({ error: err.errors, message: 'Internal server error' });
     }
 });
 
-// router.post('/login', async (req, res) => {
-//     try {
-//         const username = usernameSchema.parse(req.body.username);
-//         const password = passwordSchema.parse(req.body.password);
-
-//         const faculty = await Faculty.findOne({ username });
-
-//         if (!faculty) {
-//             throw new Error('Invalid username');
-//         }
-
-//         const isPasswordValid = await bcrypt.compare(password, faculty.password);
-
-//         if (!isPasswordValid) {
-//             throw new Error('Invalid password');
-//         }
-
-//         const token = jwt.sign({ username: faculty.username, role: faculty.role }, jwtSecret);
-
-//         res.json({ token });
-
-//     } catch (err) {
-//         res.status(400).json({ error: err.errors });
-//     }
-
-// });
-
 router.get('/students', auth, async (req, res) => {
-
     if (req.user.role !== 'faculty') {
         return res.status(403).json({ msg: 'Access denied' });
     }
 
     try {
-        const students = await StudentDetails.find({ faculty_id: req.user.userId });
+        const students = await StudentDetails.find({ faculty_id: req.user.userId }).populate('files');
         res.json(students);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
     }
-})
+});
 
 router.post('/students', auth, async (req, res) => {
     if (req.user.role !== 'faculty') {
@@ -93,9 +65,11 @@ router.post('/students', auth, async (req, res) => {
     }
 
     try {
-        const student = await StudentDetails.create({
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+        const student = new StudentDetails({
             username: req.body.username,
-            password: req.body.password,
+            password: hashedPassword,
             faculty_id: req.user.id,
             name: req.body.name,
             enrollno: req.body.enrollno,
@@ -106,19 +80,14 @@ router.post('/students', auth, async (req, res) => {
             contact: req.body.contact,
         });
 
-        student.password = await bcrypt.hash(password, 10);
-
         await student.save();
-        res.json(student);
-
+        res.status(201).json(student);
     } catch (err) {
         res.status(400).json({ error: err.errors });
     }
-
-})
+});
 
 router.put('/students/:id', auth, async (req, res) => {
-
     if (req.user.role !== 'faculty') {
         return res.status(403).json({ msg: 'Access denied' });
     }
@@ -129,7 +98,7 @@ router.put('/students/:id', auth, async (req, res) => {
         const student = await StudentDetails.findById(req.params.id);
 
         if (!student || student.faculty_id.toString() !== req.user.id) {
-            res.status(404).json({ msg: 'Student Not Found.' });
+            return res.status(404).json({ msg: 'Student Not Found.' });
         }
 
         student.name = name || student.name;
@@ -142,12 +111,11 @@ router.put('/students/:id', auth, async (req, res) => {
 
         await student.save();
         res.json(student);
-
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
     }
-})
+});
 
 router.delete('/students/:id', auth, async (req, res) => {
     if (req.user.role !== 'faculty') {
@@ -174,12 +142,12 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
             type: req.body.type,
             student_id: req.body.student_id || null,
             faculty_id: req.user.id,
-            file_id: req.file.id 
+            filename: req.file.filename,
+            fileId: req.file.id
         });
 
         await newFile.save();
-
-        res.json({ file: newFile });
+        res.status(201).json({ file: newFile });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -201,6 +169,5 @@ router.get('/files/:fileId', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
-
 
 export default router;

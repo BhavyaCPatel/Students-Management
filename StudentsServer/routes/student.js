@@ -14,6 +14,8 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ msg: 'User already exists' });
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         student = new StudentDetails({
             username,
             name,
@@ -25,11 +27,9 @@ router.post('/signup', async (req, res) => {
             contact,
             faculty_id,
             DOB,
-            password,
+            password: hashedPassword,
             role: 'student'
         });
-
-        student.password = await bcrypt.hash(password, 10);
 
         await student.save();
 
@@ -42,49 +42,13 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-// router.post('/login', async (req, res) => {
-//     const { username, password } = req.body;
-
-//     try {
-//         let student = await StudentDetails.findOne({ username });
-//         if (!student) {
-//             return res.status(400).json({ msg: 'Invalid Credentials' });
-//         }
-
-//         const isMatch = await bcrypt.compare(password, student.password);
-//         if (!isMatch) {
-//             return res.status(400).json({ msg: 'Invalid Credentials' });
-//         }
-
-//         const payload = {
-//             user: {
-//                 id: student.id,
-//                 role: student.role
-//             }
-//         };
-
-//         jwt.sign(
-//             payload,
-//             process.env.JWT_SECRET,
-//             { expiresIn: '1h' },
-//             (err, token) => {
-//                 if (err) throw err;
-//                 res.json({ token, role: student.role });
-//             }
-//         );
-//     } catch (err) {
-//         console.error(err.message);
-//         res.status(500).send('Server Error');
-//     }
-// });
-
 router.get('/', auth, async (req, res) => {
     if (req.user.role !== 'student') {
         return res.status(403).json({ msg: 'Access denied' });
     }
 
     try {
-        const student = await StudentDetails.findById(req.user.id).populate('faculty_id');
+        const student = await StudentDetails.findById(req.user.id).populate('faculty_id').populate('files');
         res.json(student);
     } catch (err) {
         console.error(err.message);
@@ -101,6 +65,10 @@ router.put('/', auth, async (req, res) => {
 
     try {
         const student = await StudentDetails.findById(req.user.id);
+
+        if (!student) {
+            return res.status(404).json({ msg: 'Student not found' });
+        }
 
         student.name = name || student.name;
         student.enrollno = enrollno || student.enrollno;
