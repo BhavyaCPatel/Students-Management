@@ -66,6 +66,7 @@ export default function StudentTable() {
         setSelectedStudentId(studentId);
         setDialogVisible(true);
     };
+    
 
     const handleDelete = async (studentId) => {
         try {
@@ -132,7 +133,7 @@ export default function StudentTable() {
             </DataTable>
 
             <Dialog visible={dialogVisible} modal onHide={hideDialog}>
-                <EditForm hide={hideDialog} studentId={selectedStudentId} />
+                <EditForm hide={hideDialog} studentId={selectedStudentId} fetchStudents={fetchStudents} />
             </Dialog>
         </div>
     );

@@ -5,7 +5,7 @@ import { Toast } from 'primereact/toast';
 import { z } from 'zod';
 import FormCard from '../FormCard';
 
-export default function EditForm({ hide, studentId }) { // Note the destructuring of studentId here
+export default function EditForm({ hide, studentId, fetchStudents }) { // Note the destructuring of fetchStudents here
     const toast = useRef(null);
 
     const singupschema = z.object({
@@ -33,7 +33,7 @@ export default function EditForm({ hide, studentId }) { // Note the destructurin
         contact: "",
         email: "",
         faculty_id: "",
-        DOB: "",
+        DOB: new Date(),
         address: "",
         password: ""
     });
@@ -71,7 +71,7 @@ export default function EditForm({ hide, studentId }) { // Note the destructurin
                         contact: studentData.contact,
                         email: studentData.email,
                         faculty_id: studentData.faculty_id,
-                        DOB: new Date(studentData.DOB).toISOString().split('T')[0], 
+                        DOB: studentData.DOB ? new Date(studentData.DOB) : new Date(),
                         address: studentData.address,
                         password: ""
                     });
@@ -99,7 +99,7 @@ export default function EditForm({ hide, studentId }) { // Note the destructurin
             enrollno: value.enrollno,
             branch: value.branch,
             sem: value.sem,
-            contact: value.contact,
+            contact:  parseInt(value.contact),
             faculty_id: selectedFaculty ? selectedFaculty._id : "",
             DOB: value.DOB,
             address: value.address
@@ -127,12 +127,14 @@ export default function EditForm({ hide, studentId }) { // Note the destructurin
                 contact: "",
                 email: "",
                 faculty_id: "",
-                DOB: "",
+                DOB: new Date(),
                 address: "",
                 password: ""
             });
             toast.current.show({ severity: 'success', summary: 'Success', detail: 'Student updated successfully', life: 5000 });
             hide();
+            fetchStudents();
+
         } catch (error) {
             if (error.response && error.response.data.message === 'User already exists') {
                 toast.current.show({ severity: 'error', summary: 'Error', detail: 'User already exists', life: 5000 });

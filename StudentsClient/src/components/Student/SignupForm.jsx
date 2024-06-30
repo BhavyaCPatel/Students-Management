@@ -2,14 +2,8 @@
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-import { FloatLabel } from "primereact/floatlabel";
 import { Toast } from 'primereact/toast';
-import { Dropdown } from 'primereact/dropdown';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Calendar } from 'primereact/calendar';
 import { z } from 'zod';
 import FormCard from '../FormCard';
 
@@ -62,7 +56,7 @@ export default function SignupForm() {
     }, []);
 
     const header = (
-        <h2 className='text-center'>Sign-Up</h2>
+        <h2 className='text-center'>Student Sign-Up</h2>
     );
 
     const submit = async () => {

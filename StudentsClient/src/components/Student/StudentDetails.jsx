@@ -73,8 +73,8 @@ export default function StudentDetails() {
                     sem: studentData.sem,
                     contact: studentData.contact,
                     email: studentData.email,
-                    faculty_id: studentData.faculty_id || '',
-                    DOB: studentData.DOB ? new Date(studentData.DOB) : new Date(), // Convert DOB to Date object, handle if DOB is null or undefined
+                    faculty_id: studentData.faculty_id,
+                    DOB: studentData.DOB ? new Date(studentData.DOB) : new Date(),
                     address: studentData.address,
                     password: ""
                 });
