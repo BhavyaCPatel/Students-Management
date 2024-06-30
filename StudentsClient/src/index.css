@@ -60,11 +60,11 @@ button:focus {
 }
 
 .blur-background {
-  background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
-  backdrop-filter: blur(10px); /* Blur the background */
-  -webkit-backdrop-filter: blur(10px); /* For Safari */
-  border-radius: 10px; /* Optional: round corners */
-  border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: border */
+  background: rgba(255, 255, 255, 0.1); 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); 
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2); 
 }
 
 .navbar-wrapper {
@@ -120,12 +120,12 @@ button:focus {
 }
 
 .custom-button {
-  outline: none; /* Remove the outline when the button is not focused */
+  outline: none; 
 }
 
 .custom-button:focus {
-  outline: none; /* Remove the blue ring when the button is focused */
-  box-shadow: none; /* Remove any box-shadow that might appear */
+  outline: none; 
+  box-shadow: none; 
 }
 
 .p-calendar .p-datepicker-trigger {
@@ -137,6 +137,10 @@ button:focus {
   padding: 5px;
 }
 
+.fieldInput .p-calendar .p-inputtext {
+  height: 2rem;
+} */
+
 .p-fluid .p-inputtext {
   width: max-content;
   border-radius: 5px;
@@ -147,4 +151,37 @@ button:focus {
   border-radius: 5px;
   background-color: transparent;
   color: white;
+}
+
+.p-dropdown .p-inputtext {
+  color: white;
+}
+
+.p-datepicker table td{
+  padding: 0;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  padding: 1rem 0.3rem;
+}
+
+.p-dialog-header{
+  display: none;
+}
+
+.p-dialog-content{
+  background-color: rgba(0, 0, 0, 0.441);
+}
+
+.edit-background{
+  background-image: 
+  radial-gradient(at 27% 37%,rgb(26, 68, 126) 0px,transparent 70%),
+    radial-gradient(at 97% 21%, rgb(51, 122, 57) 10px, transparent 70%),
+    radial-gradient(at 52% 99%, rgb(29, 112, 133) 50px, transparent 70%),
+    radial-gradient(at 10% 29%, rgb(67, 42, 137) 30px, transparent 70%),
+    radial-gradient(at 97% 96%, rgb(43, 118, 30) 10px, transparent 70%),
+    radial-gradient(at 33% 70%, rgb(48, 73, 131) 50px, transparent 70%),
+    radial-gradient(at 79% 53%, rgb(50, 119, 94) 30px, transparent 70%),
+    radial-gradient(at 0% 0%, rgb(53, 124, 98) 30px, transparent 70%);
+    border-radius: 1.5rem;
 }

@@ -1,6 +1,5 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { Faculty, StudentDetails, File } from '../db/index.js';
 import auth from '../middlewares/authMiddleware.js';
 
@@ -32,7 +31,6 @@ router.post('/signup', async (req, res) => {
         });
 
         await student.save();
-
         await Faculty.findByIdAndUpdate(faculty_id, { $push: { student_id: student._id } });
 
         res.status(201).json({ msg: 'Account created successfully. Please log in.' });
@@ -48,7 +46,9 @@ router.get('/', auth, async (req, res) => {
     }
 
     try {
-        const student = await StudentDetails.findById(req.user.id).populate('faculty_id').populate('files');
+        const student = await StudentDetails.findById(req.user.id)
+            .populate('faculty_id', 'name email department')
+            .populate('files');
         res.json(student);
     } catch (err) {
         console.error(err.message);
@@ -90,6 +90,7 @@ router.get('/files/:type', auth, async (req, res) => {
     if (req.user.role !== 'student') {
         return res.status(403).json({ msg: 'Access denied' });
     }
+
     const { type } = req.params;
     try {
         const files = await File.find({ student_id: req.user.id, type });

@@ -3,7 +3,6 @@ import auth from '../middlewares/authMiddleware.js';
 import { Faculty, StudentDetails, File } from '../db/index.js';
 import zod from 'zod';
 import bcrypt from 'bcryptjs';
-import { upload, gfs } from '../gridfs.js';
 
 const router = express.Router();
 
@@ -45,6 +44,16 @@ router.post('/signup', async (req, res) => {
     }
 });
 
+router.get('/all', async (req, res) => {
+    try {
+        const faculties = await Faculty.find({}, 'name'); 
+        res.json(faculties);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 router.get('/students', auth, async (req, res) => {
     if (req.user.role !== 'faculty') {
         return res.status(403).json({ msg: 'Access denied' });
@@ -59,6 +68,25 @@ router.get('/students', auth, async (req, res) => {
     }
 });
 
+router.get('/students/:id', auth, async (req, res) => {
+    if (req.user.role !== 'faculty') {
+        return res.status(403).json({ msg: 'Access denied' });
+    }
+
+    try {
+        const student = await StudentDetails.findById(req.params.id);
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+        res.json(student);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+
+});
+
+
+
 router.post('/students', auth, async (req, res) => {
     if (req.user.role !== 'faculty') {
         return res.status(403).json({ msg: 'Access denied' });
@@ -70,7 +98,7 @@ router.post('/students', auth, async (req, res) => {
         const student = new StudentDetails({
             username: req.body.username,
             password: hashedPassword,
-            faculty_id: req.user.id,
+            faculty_id: req.user.userId,
             name: req.body.name,
             enrollno: req.body.enrollno,
             branch: req.body.branch,
@@ -92,16 +120,20 @@ router.put('/students/:id', auth, async (req, res) => {
         return res.status(403).json({ msg: 'Access denied' });
     }
 
-    const { name, enrollno, branch, DOB, sem, address, contact } = req.body;
+    const { username, email, name, enrollno, branch, DOB, sem, address, contact, faculty_id, password } = req.body;
 
     try {
         const student = await StudentDetails.findById(req.params.id);
 
-        if (!student || student.faculty_id.toString() !== req.user.id) {
+        if (!student || student.faculty_id.toString() !== req.user.userId) {
             return res.status(404).json({ msg: 'Student Not Found.' });
         }
 
         student.name = name || student.name;
+        student.username = username || student.username;
+        student.email = email || student.email;
+        student.password = password || student.password;
+        student.faculty_id = faculty_id || student.faculty_id;
         student.enrollno = enrollno || student.enrollno;
         student.branch = branch || student.branch;
         student.DOB = DOB || student.DOB;
@@ -110,6 +142,7 @@ router.put('/students/:id', auth, async (req, res) => {
         student.contact = contact || student.contact;
 
         await student.save();
+        console.log('Student Updated')
         res.json(student);
     } catch (err) {
         console.error(err.message);
@@ -124,11 +157,13 @@ router.delete('/students/:id', auth, async (req, res) => {
 
     try {
         const student = await StudentDetails.findById(req.params.id);
-        if (!student || student.faculty_id.toString() !== req.user.id) {
+        if (!student || student.faculty_id.toString() !== req.user.userId) {
             return res.status(404).json({ msg: 'Student not found' });
         }
 
-        await student.remove();
+        await StudentDetails.findByIdAndDelete(req.params.id);
+        await Faculty.findByIdAndUpdate(req.user.userId, { $unset: { student_id: student._id } });
+
         res.json({ msg: 'Student removed' });
     } catch (err) {
         console.error(err.message);
@@ -136,38 +171,5 @@ router.delete('/students/:id', auth, async (req, res) => {
     }
 });
 
-router.post('/upload', auth, upload.single('file'), async (req, res) => {
-    try {
-        const newFile = new File({
-            type: req.body.type,
-            student_id: req.body.student_id || null,
-            faculty_id: req.user.id,
-            filename: req.file.filename,
-            fileId: req.file.id
-        });
-
-        await newFile.save();
-        res.status(201).json({ file: newFile });
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-router.get('/files/:fileId', async (req, res) => {
-    try {
-        const file = await gfs.files.findOne({ _id: mongoose.Types.ObjectId(req.params.fileId) });
-
-        if (!file) {
-            return res.status(404).json({ msg: 'File not found' });
-        }
-
-        const readstream = gfs.createReadStream(file.filename);
-        readstream.pipe(res);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
 
 export default router;

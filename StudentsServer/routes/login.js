@@ -3,7 +3,9 @@ import { Faculty, StudentDetails } from '../db/index.js';
 import zod from 'zod';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const router = Router();
 const jwtSecret = process.env.JWT_Secret;
 

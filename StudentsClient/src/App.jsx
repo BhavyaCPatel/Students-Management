@@ -6,6 +6,7 @@ import LoginForm from './components/LoginForm';
 import FacultyDashboard from './components/Faculty/FacultyDashboard.jsx';
 import StudentDashboard from './components/Student/StudentDashboard.jsx';
 import ProtectedRoute from './components/ProtectedRoute';
+import SignupForm from './components/Student/SignupForm.jsx';
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<LoginForm />} />
+          <Route path="/signup" element={<SignupForm />} />
           <Route path="/facultydashboard" element={
             <ProtectedRoute>
               <FacultyDashboard />

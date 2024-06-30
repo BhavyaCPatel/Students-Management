@@ -7,6 +7,7 @@ import { FloatLabel } from "primereact/floatlabel";
 import axios from 'axios';
 import { Toast } from 'primereact/toast';
 import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 
 export default function LoginForm() {
     const toast = useRef(null);
@@ -17,15 +18,26 @@ export default function LoginForm() {
         password: ''
     });
 
+    const loginschema = z.object({
+        username: z.string().min(1, { message: "Username is required" }),
+        password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
+    })
+
+
     const header = (
         <h2 className='text-center'>Login</h2>
     );
     
     const submit = async () => {
+
+        const validate = loginschema.safeParse({
+            username: value.username,
+            password: value.password
+        })
         try {
             const response = await axios.post('http://localhost:4000/login', {
-                username: value.username,
-                password: value.password
+                username: validate.data.username,
+                password: validate.data.password
             });
 
             const { token, role } = response.data;
