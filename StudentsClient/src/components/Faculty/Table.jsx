@@ -33,9 +33,9 @@ export default function StudentTable() {
     }, []);
 
     const handleViewMarksheet = (files) => {
-        if (Array.isArray(files)) {
+        if (Array.isArray(files) && files.length > 0) {
             files.forEach(file => window.open(`http://localhost:4000/api/files/file/${file._id}`, '_blank'));
-        } else {
+        } else if (files) {
             window.open(`http://localhost:4000/api/files/file/${files._id}`, '_blank');
         }
     };
@@ -43,7 +43,7 @@ export default function StudentTable() {
     const handleUploadMarksheet = async (event, studentId) => {
         const formData = new FormData();
         formData.append('file', event.files[0], event.files[0].name);
-    
+
         const token = localStorage.getItem('authToken');
         const config = {
             headers: {
@@ -51,16 +51,16 @@ export default function StudentTable() {
                 Authorization: `${token}`
             }
         };
-    
+
         try {
             const response = await axios.post(`http://localhost:4000/api/files/upload/marksheet/${studentId}`, formData, config);
             console.log('File uploaded successfully:', response.data);
             fetchStudents();
+            event.options.clear();
         } catch (error) {
             console.error('Error uploading file:', error);
         }
     };
-    
 
     const handleEdit = (studentId) => {
         setSelectedStudentId(studentId);
@@ -100,7 +100,9 @@ export default function StudentTable() {
         { field: 'address', header: 'Address', body: (rowData) => rowData.address },
         { field: 'files', header: 'Marksheet', body: (rowData) => (
             <div className="flex">
-                <Button icon="pi pi-eye" className="p-button-rounded p-button-success mr-1" onClick={() => handleViewMarksheet(rowData.files)} />
+                {rowData.files && rowData.files.length > 0 && (
+                    <Button icon="pi pi-eye" className="p-button-rounded p-button-success mr-1" onClick={() => handleViewMarksheet(rowData.files)} />
+                )}
                 <FileUpload
                     mode="basic"
                     accept="application/pdf, image/*"
@@ -108,6 +110,8 @@ export default function StudentTable() {
                     customUpload
                     uploadHandler={(e) => handleUploadMarksheet(e, rowData._id)}
                     className="p-button-success p-button-rounded ml-1"
+                    chooseLabel="Upload"
+                    auto
                 />
             </div>
         )},
@@ -121,7 +125,7 @@ export default function StudentTable() {
 
     return (
         <div className="card m-3 mt-5">
-            <DataTable value={students} paginator rows={5} rowsPerPageOptions={[5, 10, 25]} style={{ fontSize: '0.8rem' }}>
+            <DataTable value={students} paginator removableSort rows={5} rowsPerPageOptions={[5, 10, 25]} style={{ fontSize: '0.8rem' }}>
                 {columns.map((col, index) => (
                     <Column key={index} sortable field={col.field} header={col.header} body={col.body} style={{ width: 'max-content', border: '0.5px solid lightgray' }} />
                 ))}

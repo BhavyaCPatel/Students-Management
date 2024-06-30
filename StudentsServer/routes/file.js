@@ -6,10 +6,9 @@ import auth from '../middlewares/authMiddleware.js';
 import mongoose from 'mongoose';
 
 const router = express.Router();
-const storage = multer.memoryStorage(); // Use memory storage
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Upload marksheet
 router.post('/upload/marksheet/:studentId', auth, upload.single('file'), async (req, res) => {
     try {
         const { studentId } = req.params;
@@ -32,7 +31,7 @@ router.post('/upload/marksheet/:studentId', auth, upload.single('file'), async (
 
         uploadStream.on('finish', async () => {
             console.log('Upload finished');
-            const fileId = uploadStream.id; // Get the GridFS fileId
+            const fileId = uploadStream.id;
 
             const newFile = new File({
                 type: 'marksheet',
@@ -40,7 +39,7 @@ router.post('/upload/marksheet/:studentId', auth, upload.single('file'), async (
                 faculty_id: facultyId,
                 filename: req.file.originalname,
                 path: `uploads/${fileId}`,
-                file_id: fileId // Store GridFS file ID
+                file_id: fileId 
             });
 
             await newFile.save();

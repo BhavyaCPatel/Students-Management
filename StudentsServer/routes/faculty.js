@@ -128,11 +128,12 @@ router.put('/students/:id', auth, async (req, res) => {
         if (!student || student.faculty_id.toString() !== req.user.userId) {
             return res.status(404).json({ msg: 'Student Not Found.' });
         }
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         student.name = name || student.name;
         student.username = username || student.username;
         student.email = email || student.email;
-        student.password = password || student.password;
+        student.password = hashedPassword || student.password;
         student.faculty_id = faculty_id || student.faculty_id;
         student.enrollno = enrollno || student.enrollno;
         student.branch = branch || student.branch;

@@ -45,7 +45,7 @@ export default function LoginForm() {
             console.log(role)
     
             localStorage.setItem('authToken', token);
-
+            console.log(token)
             setValue({
                 username: '',
                 password: ''

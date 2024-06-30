@@ -9,7 +9,7 @@ const facultySchema = new mongoose.Schema({
     department: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
     role: { type: String, default: 'faculty' },
-    student_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: false }],
+    student_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'StudentDetails', required: false }],
 });
 
 // Student Details Schema
@@ -21,7 +21,7 @@ const studentDetailsSchema = new mongoose.Schema({
     name: { type: String, required: true },
     enrollno: { type: Number, required: true },
     branch: { type: String, required: true },
-    DOB: { type: Date, required: true },
+    DOB: { type: Date, required: true }, // Ensure DOB is defined as Date type
     sem: { type: Number, required: true },
     address: { type: String, required: true },
     contact: { type: Number, required: true },

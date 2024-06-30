@@ -83,8 +83,7 @@ button:focus {
 .user-icon-container {
   position: absolute;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 6%;
 }
 
 .logout-button {
@@ -184,4 +183,17 @@ button:focus {
     radial-gradient(at 79% 53%, rgb(50, 119, 94) 30px, transparent 70%),
     radial-gradient(at 0% 0%, rgb(53, 124, 98) 30px, transparent 70%);
     border-radius: 1.5rem;
+}
+
+.p-datatable-wrapper{
+  overflow: hidden !important;
+}
+
+.p-paginator-bottom  .p-dropdown-label{
+  color: black !important;
+}
+
+.view .p-button-icon{
+  padding-right: 5px;
+  padding-top: 2px;
 }

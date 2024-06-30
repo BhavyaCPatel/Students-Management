@@ -46,7 +46,7 @@ router.get('/', auth, async (req, res) => {
     }
 
     try {
-        const student = await StudentDetails.findById(req.user.id)
+        const student = await StudentDetails.findById(req.user.userId)
             .populate('faculty_id', 'name email department')
             .populate('files');
         res.json(student);
@@ -64,7 +64,7 @@ router.put('/', auth, async (req, res) => {
     const { name, enrollno, branch, DOB, sem, address, contact } = req.body;
 
     try {
-        const student = await StudentDetails.findById(req.user.id);
+        const student = await StudentDetails.findById(req.user.userId);
 
         if (!student) {
             return res.status(404).json({ msg: 'Student not found' });
@@ -93,7 +93,7 @@ router.get('/files/:type', auth, async (req, res) => {
 
     const { type } = req.params;
     try {
-        const files = await File.find({ student_id: req.user.id, type });
+        const files = await File.find({ student_id: req.user.userId, type });
         res.json(files);
     } catch (err) {
         console.error(err.message);
