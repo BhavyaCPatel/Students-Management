@@ -32,4 +32,4 @@ This project is a **Student Management System** built with the MERN stack (Mongo
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/student-management.git
+   git clone https://github.com/BhavyaCPatel/Students-Management.git
