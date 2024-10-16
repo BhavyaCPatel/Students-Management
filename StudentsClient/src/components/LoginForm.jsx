@@ -8,7 +8,7 @@ import axios from 'axios';
 import { Toast } from 'primereact/toast';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-
+import { Password } from 'primereact/password';
 export default function LoginForm() {
     const toast = useRef(null);
     const navigate = useNavigate();
@@ -99,7 +99,7 @@ export default function LoginForm() {
                 </div>
                 <div className="flex flex-wrap align-items-center mb-3 p-3 gap-2 fieldInput">
                     <FloatLabel>
-                        <InputText id="password" value={value.password} onChange={handleChange} className='bg-transparent text-white' />
+                        <Password inputId="password" value={value.password} onChange={handleChange} className='bg-transparent text-white'  toggleMask/>
                         <label htmlFor="password">Password</label>
                     </FloatLabel>
                 </div>

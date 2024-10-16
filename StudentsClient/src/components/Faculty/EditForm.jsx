@@ -5,7 +5,7 @@ import { Toast } from 'primereact/toast';
 import { z } from 'zod';
 import FormCard from '../FormCard';
 
-export default function EditForm({ hide, studentId, fetchStudents }) { // Note the destructuring of fetchStudents here
+export default function EditForm({ hide, studentId, fetchStudents }) {
     const toast = useRef(null);
 
     const singupschema = z.object({
@@ -20,6 +20,7 @@ export default function EditForm({ hide, studentId, fetchStudents }) { // Note t
         DOB: z.date(),
         password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
         faculty_id: z.string().min(1, { message: "Faculty is required" }),
+        gender: z.string().min(1, { message: "Gender is required" })
     });
 
     const [faculties, setFaculties] = useState([]);
@@ -27,6 +28,7 @@ export default function EditForm({ hide, studentId, fetchStudents }) { // Note t
     const [value, setValue] = useState({
         username: "",
         name: "",
+        gender: "",
         enrollno: "",
         branch: "",
         sem: "",
@@ -65,6 +67,7 @@ export default function EditForm({ hide, studentId, fetchStudents }) { // Note t
                     setValue({
                         username: studentData.username,
                         name: studentData.name,
+                        gender: studentData.gender,
                         enrollno: studentData.enrollno,
                         branch: studentData.branch,
                         sem: studentData.sem,
@@ -96,9 +99,10 @@ export default function EditForm({ hide, studentId, fetchStudents }) { // Note t
             email: value.email,
             password: value.password,
             name: value.name,
+            gender: value.gender,
             enrollno: value.enrollno,
             branch: value.branch,
-            sem: value.sem,
+            sem: parseInt(value.sem),
             contact:  parseInt(value.contact),
             faculty_id: selectedFaculty ? selectedFaculty._id : "",
             DOB: value.DOB,
@@ -121,6 +125,7 @@ export default function EditForm({ hide, studentId, fetchStudents }) { // Note t
             setValue({
                 username: "",
                 name: "",
+                gender: "",
                 enrollno: "",
                 branch: "",
                 sem: "",
@@ -152,15 +157,27 @@ export default function EditForm({ hide, studentId, fetchStudents }) { // Note t
     );
 
     const handleChange = (e) => {
-        setValue({
-            ...value,
-            [e.target.id]: e.target.value
-        });
+        const { id, value, name } = e.target;
+
+        if (name === 'gender') {
+            setValue((prevValue) => ({
+                ...prevValue,
+                gender: value
+            }));
+        } else {
+            setValue((prevValue) => ({
+                ...prevValue,
+                [id]: value
+            }));
+        }
     };
+    
+    
 
     const handleFacultyChange = (e) => {
         setSelectedFaculty(e.value);
     };
+
 
     return (
         <div className="card flex justify-content-center text-center edit-background">

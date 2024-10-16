@@ -5,6 +5,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
+import { Password } from 'primereact/password';
 
 const DetailsCard = ({ footer, header, value, handleChange, selectedFaculty, handleFacultyChange, faculties, editMode, handleViewMarksheet }) => {
     return (
@@ -80,7 +81,7 @@ const DetailsCard = ({ footer, header, value, handleChange, selectedFaculty, han
                 </div>
                 <div className="flex flex-wrap align-items-center mb-3 p-3 gap-2 fieldInput ">
                     <FloatLabel>
-                        <InputText id="password" value={value.password} onChange={handleChange} disabled={!editMode} className='bg-transparent text-white' />
+                        <Password inputId="password" value={value.password} onChange={handleChange} disabled={!editMode} className='bg-transparent text-white' />
                         <label htmlFor="password">Password</label>
                     </FloatLabel>
                 </div>

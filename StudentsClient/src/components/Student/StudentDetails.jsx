@@ -64,7 +64,10 @@ export default function StudentDetails() {
                     }
                 });
                 const studentData = response.data;
-                setStudentData(studentData); // Store student data in state
+                setStudentData(studentData);
+                console.log("StudentDetails", studentData._id);
+                localStorage.setItem('studId', studentData._id );
+
                 setValue({
                     username: studentData.username,
                     name: studentData.name,
@@ -136,7 +139,7 @@ export default function StudentDetails() {
                 contact: "",
                 email: "",
                 faculty_id: "",
-                DOB: new Date(), 
+                DOB: new Date(),
                 address: "",
                 password: ""
             });

@@ -100,6 +100,7 @@ router.post('/students', auth, async (req, res) => {
             password: hashedPassword,
             faculty_id: req.user.userId,
             name: req.body.name,
+            gender: req.body.gender,
             enrollno: req.body.enrollno,
             branch: req.body.branch,
             DOB: req.body.DOB,
@@ -120,7 +121,7 @@ router.put('/students/:id', auth, async (req, res) => {
         return res.status(403).json({ msg: 'Access denied' });
     }
 
-    const { username, email, name, enrollno, branch, DOB, sem, address, contact, faculty_id, password } = req.body;
+    const { username, email, name, gender, enrollno, branch, DOB, sem, address, contact, faculty_id, password } = req.body;
 
     try {
         const student = await StudentDetails.findById(req.params.id);
@@ -131,6 +132,7 @@ router.put('/students/:id', auth, async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         student.name = name || student.name;
+        student.gender = gender || student.gender;
         student.username = username || student.username;
         student.email = email || student.email;
         student.password = hashedPassword || student.password;

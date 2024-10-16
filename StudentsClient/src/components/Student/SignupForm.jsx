@@ -24,6 +24,7 @@ export default function SignupForm() {
         DOB: z.date(),
         password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
         faculty_id: z.string().min(1, { message: "Faculty is required" }),
+        gender: z.string().min(1, { message: "Gender is required" })
     })
 
     const [faculties, setFaculties] = useState([]);
@@ -31,6 +32,7 @@ export default function SignupForm() {
     const [value, setValue] = useState({
         username: "",
         name: "",
+        gender: "",
         enrollno: "",
         branch: "",
         sem: "",
@@ -66,6 +68,7 @@ export default function SignupForm() {
             email: value.email,
             password: value.password,
             name: value.name,
+            gender: value.gender,
             enrollno: value.enrollno,
             branch: value.branch,
             sem: value.sem,
@@ -91,6 +94,7 @@ export default function SignupForm() {
             setValue({
                 username: "",
                 name: "",
+                gender: "",
                 enrollno: "",
                 branch: "",
                 sem: "",
@@ -124,12 +128,20 @@ export default function SignupForm() {
     );
 
     const handleChange = (e) => {
-        setValue({
-            ...value,
-            [e.target.id]: e.target.value
-        });
-    }
+        const { id, value, name } = e.target;
 
+        if (name === 'gender') {
+            setValue((prevValue) => ({
+                ...prevValue,
+                gender: value
+            }));
+        } else {
+            setValue((prevValue) => ({
+                ...prevValue,
+                [id]: value
+            }));
+        }
+    };
     const handleFacultyChange = (e) => {
         console.log(e.value)
         setSelectedFaculty(e.value);

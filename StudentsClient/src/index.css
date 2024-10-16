@@ -40,7 +40,7 @@ button:focus {
 }
 
 ::-webkit-scrollbar{
-  width: 15px;
+  width: 10px;
   background: black;
 }
 ::-webkit-scrollbar-thumb{
@@ -185,9 +185,9 @@ button:focus {
     border-radius: 1.5rem;
 }
 
-.p-datatable-wrapper{
+/* .p-datatable-wrapper{
   overflow: hidden !important;
-}
+} */
 
 .p-paginator-bottom  .p-dropdown-label{
   color: black !important;
@@ -196,4 +196,16 @@ button:focus {
 .view .p-button-icon{
   padding-right: 5px;
   padding-top: 2px;
+}
+
+.p-password-input{
+  background-color: transparent;
+  color: white;
+}
+
+.upload-modal .p-dialog-content{
+  background-color: rgba(245, 245, 245, 0.589);
+  border: 1px solid white;
+  padding-top: 32px;
+  border-radius: 10px;
 }

@@ -6,7 +6,7 @@ import auth from '../middlewares/authMiddleware.js';
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
-    const { username, password, email, faculty_id, name, enrollno, branch, DOB, sem, address, contact } = req.body;
+    const { username, password, email, faculty_id, name, enrollno, branch, DOB, sem, address, contact, gender } = req.body;
     try {
         let student = await StudentDetails.findOne({ username });
         if (student) {
@@ -18,6 +18,7 @@ router.post('/signup', async (req, res) => {
         student = new StudentDetails({
             username,
             name,
+            gender,
             email,
             enrollno,
             branch,
@@ -71,6 +72,7 @@ router.put('/', auth, async (req, res) => {
         }
 
         student.name = name || student.name;
+        student.gender = gender || student.gender;
         student.enrollno = enrollno || student.enrollno;
         student.branch = branch || student.branch;
         student.DOB = DOB || student.DOB;
@@ -86,19 +88,19 @@ router.put('/', auth, async (req, res) => {
     }
 });
 
-router.get('/files/:type', auth, async (req, res) => {
-    if (req.user.role !== 'student') {
-        return res.status(403).json({ msg: 'Access denied' });
-    }
+// router.get('/files/:type', auth, async (req, res) => {
+//     if (req.user.role !== 'student') {
+//         return res.status(403).json({ msg: 'Access denied' });
+//     }
 
-    const { type } = req.params;
-    try {
-        const files = await File.find({ student_id: req.user.userId, type });
-        res.json(files);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
+//     const { type } = req.params;
+//     try {
+//         const files = await File.find({ student_id: req.user.userId, type });
+//         res.json(files);
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).send('Server Error');
+//     }
+// });
 
 export default router;

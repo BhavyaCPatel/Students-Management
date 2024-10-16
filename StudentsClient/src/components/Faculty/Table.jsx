@@ -89,6 +89,7 @@ export default function StudentTable() {
     const columns = [
         { field: 'username', header: 'Username', body: (rowData) => rowData.username },
         { field: 'name', header: 'Name', body: (rowData) => rowData.name },
+        { field: 'gender', header: 'Gender', body: (rowData) => rowData.gender },
         { field: 'email', header: 'Email', body: (rowData) => rowData.email },
         { field: 'enrollno', header: 'Enrollment No.', body: (rowData) => rowData.enrollno },
         { field: 'branch', header: 'Branch', body: (rowData) => rowData.branch },

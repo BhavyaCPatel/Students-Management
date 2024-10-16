@@ -4,6 +4,9 @@ import { FloatLabel } from "primereact/floatlabel";
 import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
+import { Password } from 'primereact/password';
+import { RadioButton } from 'primereact/radiobutton';
+
 
 const FormCard = ({ footer, header, value, handleChange, selectedFaculty, handleFacultyChange, faculties }) => {
     return (
@@ -20,6 +23,19 @@ const FormCard = ({ footer, header, value, handleChange, selectedFaculty, handle
                         <InputText id="name" value={value.name} onChange={handleChange} className='bg-transparent text-white' />
                         <label htmlFor="name">Name</label>
                     </FloatLabel>
+                </div>
+                <div>
+                    <label htmlFor="Gender" style={{color: '#6c757d'}}>Gender</label>
+                    <div className="flex  flex-wrap gap-3 mt-1">
+                        <div className="flex align-items-center">
+                            <RadioButton inputId="gender1" name="gender" value="Male" onChange={handleChange} checked={value.gender === 'Male'} />
+                            <label htmlFor="gender1" className="ml-2">Male</label>
+                        </div>
+                        <div className="flex align-items-center">
+                            <RadioButton inputId="gender2" name="gender" value="Female" onChange={handleChange} checked={value.gender === 'Female'} />
+                            <label htmlFor="gender2" className="ml-2">Female</label>
+                        </div>
+                    </div>
                 </div>
                 <div className="flex flex-wrap align-items-center mb-3 p-3 gap-2 fieldInput ">
                     <FloatLabel>
@@ -41,7 +57,7 @@ const FormCard = ({ footer, header, value, handleChange, selectedFaculty, handle
                 </div>
                 <div className="flex flex-wrap align-items-center mb-3 p-3 gap-2 fieldInput ">
                     <FloatLabel>
-                        <InputText id="sem" value={value.sem} onChange={handleChange} className='bg-transparent text-white' style={{width:'150px'}} />
+                        <InputText id="sem" value={value.sem} onChange={handleChange} className='bg-transparent text-white' style={{ width: '150px' }} />
                         <label htmlFor="sem">Sem</label>
                     </FloatLabel>
                 </div>
@@ -53,7 +69,7 @@ const FormCard = ({ footer, header, value, handleChange, selectedFaculty, handle
                 </div>
                 <div className="flex flex-wrap align-items-center mb-3 p-3 gap-2 fieldInput ">
                     <FloatLabel>
-                        <InputText id="contact" mask="999-999-9999" value={value.contact} onChange={handleChange} className='bg-transparent text-white' />
+                        <InputText id="contact" value={value.contact} onChange={handleChange} className='bg-transparent text-white' />
                         <label htmlFor="contact">Contact</label>
                     </FloatLabel>
                 </div>
@@ -72,13 +88,13 @@ const FormCard = ({ footer, header, value, handleChange, selectedFaculty, handle
                 </div>
                 <div className="flex flex-wrap align-items-center mb-3 p-3 gap-2 fieldInput ">
                     <FloatLabel>
-                        <Calendar utoresize="true" id="DOB" value={value.DOB} onChange={handleChange} dateFormat="yy/mm/dd" />
+                        <Calendar autoresize="true" id="DOB" value={value.DOB} onChange={handleChange} dateFormat="yy/mm/dd" />
                         <label htmlFor="DOB">DOB</label>
                     </FloatLabel>
                 </div>
-                <div className="flex flex-wrap align-items-center mb-3 p-3 gap-2 fieldInput ">
+                <div className="flex flex-wrap align-items-center mb-3 p-3 gap-2 fieldInput">
                     <FloatLabel>
-                        <InputText id="password" value={value.password} onChange={handleChange} className='bg-transparent text-white' />
+                        <Password inputId="password" value={value.password} onChange={handleChange} className='bg-transparent text-white' toggleMask />
                         <label htmlFor="password">Password</label>
                     </FloatLabel>
                 </div>

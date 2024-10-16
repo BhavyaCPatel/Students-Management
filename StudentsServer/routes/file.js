@@ -39,7 +39,7 @@ router.post('/upload/marksheet/:studentId', auth, upload.single('file'), async (
                 faculty_id: facultyId,
                 filename: req.file.originalname,
                 path: `uploads/${fileId}`,
-                file_id: fileId 
+                file_id: fileId
             });
 
             await newFile.save();
@@ -56,6 +56,63 @@ router.post('/upload/marksheet/:studentId', auth, upload.single('file'), async (
     } catch (err) {
         console.error('Error uploading file:', err);
         res.status(500).json({ error: 'Failed to upload marksheet', details: err });
+    }
+});
+
+router.post('/upload/profilepic/:studentId', auth, upload.single('file'), async (req, res) => {
+    try {
+        const { studentId } = req.params;
+        const facultyId = req.user.userId;
+
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+
+        const bucket = new GridFSBucket(mongoose.connection.db, {
+            bucketName: 'uploads'
+        });
+
+        // Find and delete the existing profile picture if it exists
+        const existingFile = await File.findOne({ student_id: studentId, type: 'profilepic' });
+        if (existingFile) {
+            await bucket.delete(existingFile.file_id);
+            await File.deleteOne({ _id: existingFile._id });
+        }
+
+        const uploadStream = bucket.openUploadStream(req.file.originalname, {
+            contentType: req.file.mimetype
+        });
+
+        console.log('Starting upload to GridFS');
+        uploadStream.end(req.file.buffer);
+
+        uploadStream.on('finish', async () => {
+            console.log('Upload finished');
+            const fileId = uploadStream.id;
+
+            const newFile = new File({
+                type: 'profilepic',
+                student_id: studentId,
+                faculty_id: facultyId,
+                filename: req.file.originalname,
+                path: `uploads/${fileId}`,
+                file_id: fileId
+            });
+
+            await newFile.save();
+            await StudentDetails.findByIdAndUpdate(studentId, { $push: { files: newFile._id } });
+
+            res.status(200).json({ file: req.file });
+        });
+
+        uploadStream.on('error', (error) => {
+            console.error('Error uploading file to GridFS:', error);
+            res.status(500).json({ error: 'Failed to upload profile photo', details: error });
+        });
+
+    } catch (err) {
+        console.error('Error uploading file:', err);
+        res.status(500).json({ error: 'Failed to upload profile photo', details: err });
     }
 });
 
@@ -135,5 +192,33 @@ router.get('/file/:fileId', async (req, res) => {
         res.status(500).json({ error: 'Failed to retrieve file', details: err });
     }
 });
+
+router.get('/profilepic/:studentId', async (req, res) => {
+    try {
+        const { studentId } = req.params;
+
+        const file = await File.findOne({ student_id: studentId, type: 'profilepic' });
+        if (!file) {
+            return res.status(404).json({ error: 'No profile picture exists' });
+        }
+
+        const bucket = new GridFSBucket(mongoose.connection.db, {
+            bucketName: 'uploads'
+        });
+
+        const downloadStream = bucket.openDownloadStream(file.file_id);
+        res.set('Content-Type', file.contentType);
+        downloadStream.on('error', err => {
+            console.error('GridFSBucketReadStream Error:', err);
+            res.status(500).json({ error: 'Failed to retrieve profile picture', details: err });
+        });
+
+        downloadStream.pipe(res);
+    } catch (err) {
+        console.error('Error retrieving profile picture:', err);
+        res.status(500).json({ error: 'Failed to retrieve profile picture', details: err });
+    }
+});
+
 
 export default router;

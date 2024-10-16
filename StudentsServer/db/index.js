@@ -1,4 +1,14 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => {
+        console.log("Connected to MongoDB");
+    }).catch((err) => {
+        console.log("Error connecting to MongoDB", err);
+    });
 
 // Faculty Schema
 const facultySchema = new mongoose.Schema({
@@ -19,6 +29,7 @@ const studentDetailsSchema = new mongoose.Schema({
     email: { type: String, required: true },
     faculty_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Faculty', required: true },
     name: { type: String, required: true },
+    gender: { type: String, enum: ["Male", "Female"]},
     enrollno: { type: Number, required: true },
     branch: { type: String, required: true },
     DOB: { type: Date, required: true }, // Ensure DOB is defined as Date type
@@ -26,7 +37,7 @@ const studentDetailsSchema = new mongoose.Schema({
     address: { type: String, required: true },
     contact: { type: Number, required: true },
     role: { type: String, default: 'student' },
-    files: [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }]
+    files: [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
 });
 
 // File Schema
